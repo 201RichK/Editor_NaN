@@ -8,6 +8,14 @@
 margin-top: 10px;
 background-color: #fff;
 }
+        #console{
+            height: 100px;
+            width: 100%;
+            background: black;
+            position: absolute;
+            color: red;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -27,6 +35,10 @@ background-color: #fff;
         </div>
         <p class="result">${contentB}</p> -->
       
+    </div>
+
+    <div id="console">
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://rawgit.com/ajaxorg/ace-builds/master/src-min-noconflict/ace.js"></script>
@@ -124,6 +136,9 @@ background-color: #fff;
                 }).then((response) => {
                     //let resultats = JSON.parse(response.data)
                     console.log(response.data);
+                    console = document.getElementById("console")
+                    let out = "time: " + response.data.time + "\n" + "result: " + response.data.stdout
+                    console.innerHTML = out
                 }).catch((err) => {
                     console.log(err);
                 })

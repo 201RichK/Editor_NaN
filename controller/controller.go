@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"time"
+
 	//"github.com/sirupsen/logrus"
 )
 
@@ -29,14 +31,16 @@ func (Mc mainController) Send(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Headers","X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding,Access-Control-Allow-Origin")
 	w.Header().Add("Content-Type", "application/json")
-	var exercie, result =  map[string]interface{}
+	exercice := make(map[string]interface{})
+	token := make(map[string]interface{})
+	result := make(map[string]interface{})
 	if r.Method == http.MethodPost {
-		err := json.NewDecoder(r.Body).Decode(exercie)
+		err := json.NewDecoder(r.Body).Decode(&exercice)
 		if err != nil {
 			panic(err)
 		}
-		exercie = 22
-		b, err := json.Marshal(exercie)
+		exercice["language_id"] = 22
+		b, err := json.Marshal(exercice)
 		fmt.Println(string(b))
 		reader := bytes.NewReader(b)
 		client := new(http.Client)
@@ -46,10 +50,19 @@ func (Mc mainController) Send(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-
+		json.NewDecoder(res.Body).Decode(&token)
+		fmt.Println(token["token"].(string))
+		time.Sleep(5 * time.Second)
+		res, err = http.Get("https://api.judge0.com/submissions/" + token["token"].(string) + "?base64_encoded=false")
+		json.NewDecoder(res.Body).Decode(&result)
+		logrus.Info(result)
 	}
 
-	json.NewEncoder(w).Encode("ok")
-	logrus.Info(result)
+	m := make(map[string]interface{})
+	m["stdout"] = result["stdout"]
+	m["stderr"] = result["stderr"]
+	m["time"] = result["time"]
+
+	json.NewEncoder(w).Encode(m)
 }
 
