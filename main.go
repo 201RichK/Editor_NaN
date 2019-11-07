@@ -15,9 +15,12 @@ func main (){
 
 	//initialisation du controller
 	mc := controller.InitMainController()
+	mux := http.NewServeMux()
 
 	//Routes
-	http.HandleFunc("/", mc.Index)
+	mux.HandleFunc("/", mc.Index)
+	mux.HandleFunc("/send", mc.Send)
+
 
 
 
@@ -27,6 +30,6 @@ func main (){
 		port = ":8080"
 	}
 	log.Info("server on listen on http://localhost:"+port)
-	http.ListenAndServe(fmt.Sprintf(port), nil)
+	http.ListenAndServe(fmt.Sprintf(port), mux)
 }
 

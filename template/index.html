@@ -1,18 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        .result {
+margin-top: 10px;
+background-color: #fff;
+}
+    </style>
 </head>
 <body>
-<h1>NAN </h1>
-<div id="app">
-    <form action="">
-        <textarea></textarea>
-        <button type="submit">Submit</button>
-    </form>
-</div>
 
+    <div id="app">
+        <h1>Editeur</h1>
+      
+        <div style="height: 400px">
+            <editor editor-id="editorA" :content="contentA" v-on:change-content="changeContentA" ></editor>
+        </div>
+        <button type="submit"  @click="getcontentA">Run</button>
+        <!-- <p class="result">${contentA}</p> -->
+         
+        <!-- <p>Editor B</p>
+        <div style="height: 100px">
+        <editor editor-id="editorB" :content="contentB" v-on:change-content="changeContentB"></editor>
+        </div>
+        <p class="result">${contentB}</p> -->
+      
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://rawgit.com/ajaxorg/ace-builds/master/src-min-noconflict/ace.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        Vue.component('Editor', {
+            template: '<div :id="editorId" style="width: 100%; height: 100%;"></div>',
+            props: ['editorId', 'content', 'lang', 'theme'],
+            data () {
+                return {
+                editor: Object,
+                beforeContent: ''
+                }
+            },
+            watch: {
+                'content' (value) {
+                    if (this.beforeContent !== value) {
+                        this.editor.setValue(value, 1)
+                    }
+                }
+            },
+            mounted () {
+                const lang = this.lang || 'python'
+                const theme = this.theme || 'ambiance'
+
+                    this.editor = window.ace.edit(this.editorId)
+                this.editor.setValue(this.content, 1)
+
+                // mode-xxx.js or theme-xxx.jsがある場合のみ有効
+                this.editor.getSession().setMode(`ace/mode/${lang}`)
+                this.editor.setTheme(`ace/theme/${theme}`)
+                this.editor.on('change', () => {
+                    this.beforeContent = this.editor.getValue()
+                    this.$emit('change-content', this.editor.getValue())
+                })
+            }
+        })
+        const app = new Vue({
+            el: "#app",
+        data () {
+            return {
+                contentA: 'package main\n' +
+                    '\n' +
+                    'import "fmt"\n' +
+                    '\n' +
+                    'func main() {\n' +
+                    '    fmt.Println("helllo")\n' +
+                    '}',
+                //   contentB: 'default content for Editor B'
+                base_usl: 'http://127.0.0.1:8080',
+            }
+        },
+            delimiters: ["${", "}"],
+        methods: {
+            reset () {
+                this.contentA = 'reset content for Editor A'
+            //   this.contentB = 'reset content for Editor B'
+
+            },
+
+            changeContentA (val) {
+                if (this.contentA !== val) {
+                    this.contentA = val
+                }
+            },
+
+            getcontentA(){
+                console.log(this.contentA)
+                this.sendcode(this.contentA)
+            },
+
+
+            sendcode(exoid) {
+               // this.editor = window.ace.edit('editor')
+
+                //code = this.editor.getValue()
+
+                let data = JSON.stringify({
+                    source_code: exoid
+                })
+
+                console.log(data)
+
+
+
+                axios.post(this.base_usl + '/send', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then((response) => {
+                    //let resultats = JSON.parse(response.data)
+                    console.log(response.data);
+                }).catch((err) => {
+                    console.log(err);
+                })
+            },
+
+            // changeContentB (val) {
+            // 	if (this.contentB !== val) {
+            //   	this.contentB = val
+            //   }
+            // }
+        }
+        })
+    </script>
 </body>
+
 </html>
