@@ -13,7 +13,7 @@
 #code
 
 <div class="editor" v-on:paste.stop="doSomething">
-     <editor editor-id="editorA" :theme="theme" :langs="langs" :content="contentA" v-on:change-content="changeContentA"></editor>
+     <editor editor-id="editor" :theme="theme" :langs="langs" :content="code" v-on:change-content="changeContentA"></editor>
 </div>
 
 # cdn
