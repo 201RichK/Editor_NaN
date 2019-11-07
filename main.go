@@ -1,23 +1,18 @@
 package main
 
 import (
-	"html/template"
+	"Editor_NaN/controller"
 	"net/http"
 )
 
 
-var TPL *template.Template
 
-func init()  {
-	TPL = template.Must(template.ParseGlob("template/*.html"))
-}
 
 func main (){
-	http.HandleFunc("/", Index)
+
+	mc := controller.InitMainController()
+
+	http.HandleFunc("/", mc.Index)
 	http.ListenAndServe(":8080", nil)
 }
 
-
-func Index(w http.ResponseWriter, r *http.Request) {
-	TPL.ExecuteTemplate(w, "index.html", nil)
-}
