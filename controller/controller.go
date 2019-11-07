@@ -2,8 +2,9 @@ package controller
 
 import (
 	"Editor_NaN/conf"
-	"encoding/json"
+	"Editor_NaN/utils"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -43,17 +44,11 @@ func (Mc mainController) Send(w http.ResponseWriter, r *http.Request) {
 		b, err := json.Marshal(exercice)
 		fmt.Println(string(b))
 		reader := bytes.NewReader(b)
-		client := new(http.Client)
-		request, err := http.NewRequest("POST", "https://api.judge0.com/submissions/?base64_encoded=false&wait=false", reader)
-		request.Header.Set("Content-Type", "application/json")
-		res, err := client.Do(request)
-		if err != nil {
-			panic(err)
-		}
+		res, err := utils.MakeRequest(http.MethodPost, "application/json", "", reader)
 		json.NewDecoder(res.Body).Decode(&token)
 		fmt.Println(token["token"].(string))
-		time.Sleep(5 * time.Second)
-		res, err = http.Get("https://api.judge0.com/submissions/" + token["token"].(string) + "?base64_encoded=false")
+		time.Sleep(3 * time.Second)
+		res, err = utils.MakeRequest(http.MethodGet, "application/x-www-form-urlencoded", token["token"].(string), nil)
 		json.NewDecoder(res.Body).Decode(&result)
 		logrus.Info(result)
 	}
@@ -65,4 +60,6 @@ func (Mc mainController) Send(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(m)
 }
+
+
 
