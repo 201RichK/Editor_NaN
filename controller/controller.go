@@ -5,9 +5,7 @@ import (
 	"net/http"
 )
 
-type mainController struct {
-
-}
+type mainController struct {}
 
 func InitMainController () *mainController {
 	return &mainController{}
