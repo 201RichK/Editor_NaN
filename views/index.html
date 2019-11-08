@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <style>
+    .result {
+      margin-top: 10px;
+      background-color: #fff;
+    }
+    #console{
+      height: 100px;
+      width: 100%;
+      background: black;
+      position: absolute;
+      color: red;
+      text-align: center;
+    }
+    .lds-ellipsis {
+      display: inline-block;
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+    .lds-ellipsis div {
+      position: absolute;
+      top: 27px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #fff;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    .lds-ellipsis div:nth-child(1) {
+      left: 6px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+      left: 6px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(3) {
+      left: 26px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(4) {
+      left: 45px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(19px, 0);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <h1>Editeur</h1>
+
+  <div style="display:flex">
+    <div style="flex:2">
+      <div style="height: 400px">
+        <editor editor-id="editorA" :content="contentA" v-on:change-content="changeContentA" ></editor>
+      </div>
+      <button :disabled="codesend" type="submit"  @click="getcontentA">Run</button>
+    </div>
+    <div style="flex:1">
+      <ul>
+        {{ range .message}}
+        <li>Sujet: {{ .Subject }}</li>
+        <li>Result: {{ .Success }}</li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+  <!-- <p class="result">${contentA}</p> -->
+
+  <!-- <p>Editor B</p>
+  <div style="height: 100px">
+  <editor editor-id="editorB" :content="contentB" v-on:change-content="changeContentB"></editor>
+  </div>
+  <p class="result">${contentB}</p> -->
+  <div id="console">
+    <div v-if="codesend" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    ${ cons }
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://rawgit.com/ajaxorg/ace-builds/master/src-min-noconflict/ace.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+  Vue.component('Editor', {
+    template: '<div :id="editorId" style="width: 100%; height: 100%;"></div>',
+    props: ['editorId', 'content', 'lang', 'theme'],
+    data () {
+      return {
+        editor: Object,
+        beforeContent: ''
+      }
+    },
+    watch: {
+      'content' (value) {
+        if (this.beforeContent !== value) {
+          this.editor.setValue(value, 1)
+        }
+      }
+    },
+    mounted () {
+      const lang = this.lang || 'python'
+      const theme = this.theme || 'ambiance'
+
+      this.editor = window.ace.edit(this.editorId)
+      this.editor.setValue(this.content, 1)
+
+      // mode-xxx.js or theme-xxx.jsがある場合のみ有効
+      this.editor.getSession().setMode(`ace/mode/${lang}`)
+      this.editor.setTheme(`ace/theme/${theme}`)
+      this.editor.on('change', () => {
+        this.beforeContent = this.editor.getValue()
+        this.$emit('change-content', this.editor.getValue())
+      })
+    }
+  })
+  const app = new Vue({
+    el: "#app",
+    data () {
+      return {
+        contentA: 'package main\n' +
+                '\n' +
+                'import "fmt"\n' +
+                '\n' +
+                'func main() {\n' +
+                '    fmt.Println("helllo")\n' +
+                '}',
+        //   contentB: 'default content for Editor B'
+        base_usl: 'http://127.0.0.1:8080',
+        cons : "",
+        codesend: false,
+      }
+    },
+
+    delimiters: ["${", "}"],
+
+    methods: {
+      reset () {
+        this.contentA = 'reset content for Editor A'
+        //   this.contentB = 'reset content for Editor B'
+
+      },
+
+      changeContentA (val) {
+        if (this.contentA !== val) {
+          this.contentA = val
+        }
+      },
+
+      getcontentA(){
+        console.log(this.contentA)
+        this.sendcode(this.contentA)
+      },
+
+
+      sendcode(exoid) {
+        // this.editor = window.ace.edit('editor')
+        this.cons = "";
+        this.codesend = true;
+        //code = this.editor.getValue()
+
+        let data = JSON.stringify({
+          source_code: exoid,
+
+        })
+
+
+
+        axios.post(this.base_usl + '/send', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }).then((response) => {
+          //let resultats = JSON.parse(response.data)
+          console.log(response.data);
+          this.cons = "time: " + response.data.time + "\n" + "result: " + response.data.stdout
+          this.codesend = false;
+
+        }).catch((err) => {
+          console.log(err);
+          this.codesend = false;
+        })
+      },
+
+      // changeContentB (val) {
+      // 	if (this.contentB !== val) {
+      //   	this.contentB = val
+      //   }
+      // }
+    }
+  })
+</script>
+</body>
+
+</html>
