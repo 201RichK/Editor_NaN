@@ -7,7 +7,7 @@ import (
 )
 
 /*
-	Make resquesr to the judge0 api with the http Method
+	Make resquest to the judge0 api with the http Method
 */
 func MakeRequest(method, contentType, token string, reader io.Reader) (*http.Response, error) {
 	client := new(http.Client)
@@ -15,6 +15,8 @@ func MakeRequest(method, contentType, token string, reader io.Reader) (*http.Res
 	client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // disable verify
 	}
+
+	//make request to the juqge API
 	request, err := http.NewRequest(method, "https://api.judge0.com/submissions/"+token+"?base64_encoded=false&wait=false", reader)
 	request.Header.Set("Content-Type", contentType)
 	res, err := client.Do(request)
