@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"runtime"
 	"text/tabwriter"
 	"workspace/Editor_NaN/models"
 	"workspace/Editor_NaN/utils"
@@ -37,7 +38,7 @@ func (this *MainController) Index() {
 }
 
 func (this *MainController) Send() {
-	
+	logrus.Info(runtime.NumGoroutine())
 
 	this.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
 	this.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
@@ -49,15 +50,12 @@ func (this *MainController) Send() {
 		this.ServeJSON()
 		return
 	}
-	
+
 	exercice := make(map[string]interface{})
-	token := make(map[string]interface{})
 	result := make(map[string]interface{})
-
-
+	token := make(map[string]interface{})
 	err := json.NewDecoder(this.Ctx.Request.Body).Decode(&exercice)
-	
-	programhead := "package main \n import \"fmt\" \n " + exercice["source_code"].(string) + "\n func main() { \n fmt.Println(somme(5, 4)) \n }" 
+	programhead := "package main \n import \"fmt\" \n " + exercice["source_code"].(string) + "\n func main() { \n " + "fmt.Println(somme(5, 4))" + " \n }"
 	exercice["source_code"] = programhead
 
 	if err != nil {
@@ -71,7 +69,6 @@ func (this *MainController) Send() {
 	if err != nil {
 		panic(err)
 	}
-	defer res.Body.Close()
 	json.NewDecoder(res.Body).Decode(&token)
 	fmt.Println(token)
 	res, err = utils.MakeRequest(http.MethodGet, "application/x-www-form-urlencoded", token["token"].(string), nil)
