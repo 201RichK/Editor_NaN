@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"workspace/Editor_NaN/models"
+	"github.com/201RichK/workspace/Editor_NaN/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
