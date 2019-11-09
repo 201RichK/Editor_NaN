@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"workspace/Editor_NaN/models"
-	"workspace/Editor_NaN/utils"
+	"github.com/201RichK/workspace/Editor_NaN/models"
+	"github.com/201RichK/workspace/Editor_NaN/utils"
 
 	"github.com/astaxie/beego"
 	"github.com/sirupsen/logrus"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "workspace/Editor_NaN/routers"
+	_ "github.com/201RichK/workspace/Editor_NaN/routers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
