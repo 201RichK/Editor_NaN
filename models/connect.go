@@ -17,7 +17,7 @@ type User struct {
 	Id       int64
 	Email    string      `orm:"size(128)" valid:"Required;Email"`
 	Password string      `orm:"size(128)"  valid:"Required"`
-	Exercice []*Exercice `orm:"reverse(many)"`
+	Exercices []*Exercice `orm:"reverse(many)"`
 }
 
 type Exercice struct {
@@ -26,7 +26,7 @@ type Exercice struct {
 	Run      int64
 	UserCode string
 	Program  string
-	ExecTime *time.Duration
+	ExecTime time.Duration
 	Success  bool
 	User     *User `orm:"rel(fk)"`
 }

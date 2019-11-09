@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/201RichK/workspace/Editor_NaN/models"
-	"github.com/201RichK/workspace/Editor_NaN/utils"
+	"text/tabwriter"
+	"workspace/Editor_NaN/models"
+	"workspace/Editor_NaN/utils"
 
 	"github.com/astaxie/beego"
 	"github.com/sirupsen/logrus"
@@ -23,17 +24,21 @@ func (this *MainController) Index() {
 		this.Ctx.Redirect(http.StatusSeeOther, "/login")
 		return
 	}
-	exercices, err := models.GetExerciceById(1)
+	exercice, err := models.GetExerciceById(3)
 	if err != nil {
 		panic(err)
 	}
 	this.TplName = "index.html"
-	fmt.Println(exercices)
-	this.Data["message"] = exercices
+	fmt.Println(exercice.Program)
+	tab := tabwriter.NewWriter(this.Ctx.ResponseWriter, 5, 0, 1, ' ', tabwriter.AlignRight)
+	this.Data["exercice"] = exercice
+	tab.Flush()
 	this.Render()
 }
 
 func (this *MainController) Send() {
+	
+
 	this.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
 	this.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
 	this.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, Origin, Authorization, Content-Type")
@@ -44,12 +49,17 @@ func (this *MainController) Send() {
 		this.ServeJSON()
 		return
 	}
-
+	
 	exercice := make(map[string]interface{})
 	token := make(map[string]interface{})
 	result := make(map[string]interface{})
 
+
 	err := json.NewDecoder(this.Ctx.Request.Body).Decode(&exercice)
+	
+	programhead := "package main \n import \"fmt\" \n " + exercice["source_code"].(string) + "\n func main() { \n fmt.Println(somme(5, 4)) \n }" 
+	exercice["source_code"] = programhead
+
 	if err != nil {
 		panic(err)
 	}
@@ -61,6 +71,7 @@ func (this *MainController) Send() {
 	if err != nil {
 		panic(err)
 	}
+	defer res.Body.Close()
 	json.NewDecoder(res.Body).Decode(&token)
 	fmt.Println(token)
 	res, err = utils.MakeRequest(http.MethodGet, "application/x-www-form-urlencoded", token["token"].(string), nil)

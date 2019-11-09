@@ -88,10 +88,8 @@
     </div>
     <div style="flex:1">
       <ul>
-        {{ range .message}}
-        <li>Sujet: {{ .Subject }}</li>
-        <li>Result: {{ .Success }}</li>
-        {{end}}
+        <li>Sujet: {{ .exercice.Sujet }}</li>
+        <li>Result: {{ .exercice.Success }}</li>
       </ul>
     </div>
   </div>
@@ -141,7 +139,7 @@
 
       this.editor = window.ace.edit(this.editorId)
       this.editor.setValue(this.content, 1)
-
+      
       // mode-xxx.js or theme-xxx.jsがある場合のみ有効
       this.editor.getSession().setMode(`ace/mode/${lang}`)
       this.editor.setTheme(`ace/theme/${theme}`)
@@ -155,20 +153,14 @@
     el: "#app",
     data () {
       return {
-        contentA: 'package main\n' +
-                '\n' +
-                'import "fmt"\n' +
-                '\n' +
-                'func main() {\n' +
-                '    fmt.Println("helllo")\n' +
-                '}',
+        contentA: '{{ println .exercice.Program}}',
         //   contentB: 'default content for Editor B'
         base_usl: 'http://127.0.0.1:8080',
         cons : "",
         codesend: false,
+        code: '',
       }
     },
-
     delimiters: ["${", "}"],
 
     methods: {

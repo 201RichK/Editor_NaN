@@ -14,6 +14,7 @@ func MakeRequest(method, contentType, token string, reader io.Reader) (*http.Res
 	//dire aux client d'attendre la reponse quelque soit le temp
 	client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // disable verify
+		TLSHandshakeTimeout: 0,
 	}
 
 	//make request to the juqge API
