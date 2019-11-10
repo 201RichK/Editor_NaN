@@ -1,116 +1,141 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
+  <meta charset="utf-8">
+  <title></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-  <style>
-    .result {
-      margin-top: 10px;
-      background-color: #fff;
-    }
-    #console{
-      height: 100px;
-      width: 100%;
-      background: black;
-      position: absolute;
-      color: red;
-      text-align: center;
-    }
-    .lds-ellipsis {
-      display: inline-block;
-      position: relative;
-      width: 64px;
-      height: 64px;
-    }
-    .lds-ellipsis div {
-      position: absolute;
-      top: 27px;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #fff;
-      animation-timing-function: cubic-bezier(0, 1, 1, 0);
-    }
-    .lds-ellipsis div:nth-child(1) {
-      left: 6px;
-      animation: lds-ellipsis1 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(2) {
-      left: 6px;
-      animation: lds-ellipsis2 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(3) {
-      left: 26px;
-      animation: lds-ellipsis2 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(4) {
-      left: 45px;
-      animation: lds-ellipsis3 0.6s infinite;
-    }
-    @keyframes lds-ellipsis1 {
-      0% {
-        transform: scale(0);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-    @keyframes lds-ellipsis3 {
-      0% {
-        transform: scale(1);
-      }
-      100% {
-        transform: scale(0);
-      }
-    }
-    @keyframes lds-ellipsis2 {
-      0% {
-        transform: translate(0, 0);
-      }
-      100% {
-        transform: translate(19px, 0);
-      }
-    }
-
-  </style>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-
 <div id="app">
-  <h1>Editeur</h1>
-
-  <div style="display:flex">
+  <div class="editor">
     <div style="flex:2">
       <div style="height: 400px">
         <editor editor-id="editorA" :content="contentA" v-on:change-content="changeContentA" ></editor>
       </div>
       <button :disabled="codesend" type="submit"  @click="getcontentA">Run</button>
+
     </div>
-    <div style="flex:1">
+    <div class="info" style="flex:1">
       <ul>
         <li>Sujet: {{ .exercice.Sujet }}</li>
         <li>Result: {{ .exercice.Success }}</li>
       </ul>
+      <div class="console">
+        <p > <span class="a"><b class="editorA">NaN_Editor</b class="b"> #:</span><div v-if="codesend" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>${ cons }
+        </p>
+      </div>
     </div>
-  </div>
-
-  <!-- <p class="result">${contentA}</p> -->
-
-  <!-- <p>Editor B</p>
-  <div style="height: 100px">
-  <editor editor-id="editorB" :content="contentB" v-on:change-content="changeContentB"></editor>
-  </div>
-  <p class="result">${contentB}</p> -->
-  <div id="console">
-    <div v-if="codesend" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    ${ cons }
   </div>
 </div>
 
+<div class="timelineDiv">
+  <div class="">
+    <div class="Timeline">
 
+      <svg height="5" width="200">
+        <line x1="0" y1="0" x2="200" y2="0" style="stroke:#004165;stroke-width:5" />
+        Sorry, your browser does not support inline SVG.
+      </svg>
+
+      <div class="event1">
+
+        <div class="event1Bubble">
+          <div class="eventTime">
+            <div class="DayDigit">02</div>
+            <div class="Day">
+              Run
+              <div class="MonthYear">Exo 1</div>
+            </div>
+            <div class="DayDigit">02</div>
+            <div class="Day">
+              Run
+              <div class="MonthYear">Exo 1</div>
+            </div>
+          </div>
+        </div>
+        <div class="eventAuthor">John Doe succed with 4s runtime</div>
+        <svg height="20" width="20">
+          <circle cx="10" cy="11" r="5" fill="#004165" />
+        </svg>
+        <div class="time">4s runtime</div>
+
+      </div>
+
+      <svg height="5" width="300">
+        <line x1="0" y1="0" x2="300" y2="0" style="stroke:#004165;stroke-width:5" />
+        Sorry, your browser does not support inline SVG.
+      </svg>
+
+      <div class="event2">
+
+        <div class="event2Bubble">
+          <div class="eventTime">
+            <div class="DayDigit">17</div>
+            <div class="Day">
+              Run
+              <div class="MonthYear">Exo2</div>
+            </div>
+            <div class="DayDigit">17</div>
+            <div class="Day">
+              Run
+              <div class="MonthYear">Exo2</div>
+            </div>
+          </div>
+        </div>
+        <div class="event2Author">john Doe Succed with 5s runtime</div>
+        <svg height="20" width="20">
+          <circle cx="10" cy="11" r="5" fill="#004165" />
+        </svg>
+        <div class="time2">09s runtime</div>
+      </div>
+
+      <svg height="5" width="50">
+        <line x1="0" y1="0" x2="50" y2="0" style="stroke:#004165;stroke-width:5" />
+        Sorry, your browser does not support inline SVG.
+      </svg>
+
+      <div class="now">
+        NOW
+      </div>
+
+
+      <svg height="5" width="150">
+        <line x1="0" y1="0" x2="150" y2="0" style="stroke:rgba(162, 164, 163, 0.37);stroke-width:5" />
+        Sorry, your browser does not support inline SVG.
+      </svg>
+      <div class="event3 futureGray ">
+        <div class="event1Bubble futureOpacity">
+          <div class="eventTime">
+            <div class="DayDigit">05</div>
+            <div class="Day">
+              Tuesday
+              <div class="MonthYear">May 2016</div>
+            </div>
+          </div>
+          <div class="eventTitle">Anticipated Hire</div>
+        </div>
+        <svg height="20" width="20">
+          <circle cx="10" cy="11" r="5" fill="rgba(162, 164, 163, 0.37)" />
+        </svg>
+      </div>
+      <svg height="5" width="50">
+        <line x1="0" y1="0" x2="50" y2="0" style="stroke:#004165;stroke-width:5" />
+      </svg>
+      <svg height="20" width="42">
+        <line x1="1" y1="0" x2="1" y2="20" style="stroke:#004165;stroke-width:2" />
+        <circle cx="11" cy="10" r="3" fill="#004165" />
+        <circle cx="21" cy="10" r="3" fill="#004165" />
+        <circle cx="31" cy="10" r="3" fill="#004165" />
+        <line x1="41" y1="0" x2="41" y2="20" style="stroke:#004165;stroke-width:2" />
+      </svg>
+
+    </div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://rawgit.com/ajaxorg/ace-builds/master/src-min-noconflict/ace.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="./static/js/axios.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -139,7 +164,7 @@
 
       this.editor = window.ace.edit(this.editorId)
       this.editor.setValue(this.content, 1)
-      
+
       // mode-xxx.js or theme-xxx.jsがある場合のみ有効
       this.editor.getSession().setMode(`ace/mode/${lang}`)
       this.editor.setTheme(`ace/theme/${theme}`)
@@ -220,5 +245,4 @@
   })
 </script>
 </body>
-
 </html>

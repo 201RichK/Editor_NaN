@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"workspace/Editor_NaN/controllers"
+	"github.com/201RichK/Editor_NaN/controllers"
 
 	"github.com/astaxie/beego"
 )

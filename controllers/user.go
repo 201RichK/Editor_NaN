@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"workspace/Editor_NaN/models"
+	"github.com/201RichK/Editor_NaN/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
@@ -38,15 +38,15 @@ func (this *UserController) Login() {
 
 	//get user on Db and init session
 	user, err := models.GetUserByEmail(&u)
-	if err == nil {
-		this.StartSession()
-		this.SetSession("connected", user)
-		this.Ctx.Redirect(http.StatusSeeOther, "/")
-	} else {
+	if err != nil {
 		this.Ctx.Redirect(http.StatusSeeOther, "/login")
 		return
 	}
 
+	//start session and redirect user to the code editor
+	this.StartSession()
+	this.SetSession("connected", user)
+	this.Ctx.Redirect(http.StatusSeeOther, "/")
 }
 
 // URLMapping ...
