@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
 )
@@ -32,6 +31,5 @@ func (config *RequestConfig) parse() (string, io.Reader) {
 		}
 	}
 	u.RawQuery = q.Encode()
-	fmt.Println(u.String())
 	return u.String(), bufReader
 }

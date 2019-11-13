@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"context"
 	"time"
+	"errors"
 )
 
 func (remote *remote) POST(config RequestConfig) (*http.Response, error) {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
 	
 	url, body := config.parse()
@@ -25,7 +26,7 @@ func (remote *remote) POST(config RequestConfig) (*http.Response, error) {
 	request.Header.Set("Content-Type", "application/json")
 	res, err := remote.client.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Request Timeout")
 	}
 	return res, nil
 }

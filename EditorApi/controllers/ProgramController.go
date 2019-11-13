@@ -24,7 +24,7 @@ type ProgramController struct {
 */
 
 func (this *ProgramController) RunProgram() {
-	utils.SetHeader(this.Controller)
+	utils.SetHeader(&this.Controller)
 	if this.Ctx.Request.Method == http.MethodOptions {
 		this.Abort("204")
 		this.ServeJSON()
@@ -35,19 +35,27 @@ func (this *ProgramController) RunProgram() {
 	programHeader := "package main \nimport \"fmt\"  \n" + exerciceModel.Program["source_code"].(string) + "\nfunc main() { \n\n " + "fmt.Println(somme(5, 4))" + "\n\n }"
 	exerciceModel.Program["source_code"] = programHeader
 	exerciceModel.Program["language_id"] = 22
+	fmt.Println(exerciceModel.Program)
 	rmt := remote.NewRemote(remote.RemoteConfig{})
 	res, err := rmt.POST(remote.RequestConfig{
 		URL:  utils.BaseUrl(exerciceModel.Token),
 		Body: exerciceModel.Program,
 	})
+
 	utils.CheckError(err)
 	json.NewDecoder(res.Body).Decode(&exerciceModel.Token)
 	res, err = rmt.GET(remote.RequestConfig{
 		URL: utils.BaseUrl(exerciceModel.Token),
 	})
+	
 	utils.CheckError(err)
 	json.NewDecoder(res.Body).Decode(&exerciceModel.Result)
 	fmt.Println(exerciceModel.Result)
+	m := make(map[string]interface{})
+	m["time"] = exerciceModel.Result["time"]
+	m["stdout"] = exerciceModel.Result["stdout"]
+	m["stderr"] = exerciceModel.Result["stderr"]
+	this.Data["json"] = m
 	this.ServeJSON()
 }
 

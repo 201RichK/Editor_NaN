@@ -6,5 +6,5 @@ import (
 )
 
 func init() {
-	beego.Router("/run", &controllers.ProgramController{}, "post:RunProgram")
+	beego.Router("/run", &controllers.ProgramController{}, "post,options:RunProgram")
 }

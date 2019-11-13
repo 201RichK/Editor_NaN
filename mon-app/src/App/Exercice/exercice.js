@@ -8,7 +8,7 @@ export default class Exercice extends Component {
 
     render = () => {
         return (
-            <div id="Exercice" className="one">
+            <div id="Exercice" >
                 <ul>
                     <li>
                         Exercice 1

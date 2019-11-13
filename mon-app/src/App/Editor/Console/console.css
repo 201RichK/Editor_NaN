@@ -2,4 +2,12 @@
     border-top: 1px solid #ccc; 
     height: 100px;
     background: #2D2D2D;
+    color: #eee;
 }
+
+
+#Console strong {
+    color: #B9090B;
+}
+
+

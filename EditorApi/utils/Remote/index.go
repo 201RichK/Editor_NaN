@@ -13,7 +13,9 @@ type RemoteConfig struct {
 
 func NewRemote(config RemoteConfig) *remote {
 	client := &http.Client{
-		Timeout: 0,
+		Transport: &http.Transport{
+			TLSHandshakeTimeout: 0,
+		},
 	}
 	return &remote{
 		client: client,

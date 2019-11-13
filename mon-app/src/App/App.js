@@ -6,10 +6,13 @@ import Timeline from './Timeline/timeline'
 
 function App() {
 
+
   return (
     <div className="App flex column one">
       <div className="flex row three">
-        <Exercice></Exercice>
+        <div className="one">
+          <Exercice></Exercice>
+        </div>
         <Editor></Editor>
       </div>
       <div className="one">
