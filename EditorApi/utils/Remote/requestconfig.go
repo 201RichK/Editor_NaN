@@ -7,6 +7,23 @@ import (
 	"net/url"
 )
 
+
+/*
+	Configurer la requete
+	example:
+	url: "http://localhost:8080"
+	query: map[string][]string{
+		"ID": []string{"0"},
+		"Name": []string{"Allou"},
+	}
+	Header: map[string]string{
+		"Content-Type": "application/json",
+	}
+	Body: User{
+		Name: "Allou",
+	}
+*/
+
 type RequestConfig struct {
 	URL    string
 	Query  map[string][]string

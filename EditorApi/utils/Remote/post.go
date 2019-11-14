@@ -7,6 +7,10 @@ import (
 	"errors"
 )
 
+/*
+	Fait des requetes POST sur un url specifique avec les configurations definies dans RequestConfig
+*/
+
 func (remote *remote) POST(config RequestConfig) (*http.Response, error) {
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)

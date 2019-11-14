@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"Editor_NaN/EditorApi/models"
 	remote "Editor_NaN/EditorApi/utils/Remote"
 	utils "Editor_NaN/EditorApi/utils/option"
 	"encoding/json"
@@ -13,6 +12,12 @@ import (
 
 type ProgramController struct {
 	beego.Controller
+}
+
+type ExerciceModel struct {
+	Program map[string]interface{}
+	Token   map[string]interface{}
+	Result  map[string]interface{}
 }
 
 /*
@@ -32,9 +37,9 @@ func (this *ProgramController) RunProgram() {
 	}
 
 	//models de l'exercice
-	exerciceModel := new(models.ExerciceModel)
+	exerciceModel := new(ExerciceModel)
 
-	//Recevoir l'exercice venu de la page de composition
+	//Recuperer le code de l'utilisateur
 	json.NewDecoder(this.Ctx.Request.Body).Decode(&exerciceModel.Program)
 
 	programHeader := "package main \nimport \"fmt\"  \n" + exerciceModel.Program["source_code"].(string) + "\nfunc main() { \n\n " + "fmt.Println(somme(5, 4))" + "\n\n }"

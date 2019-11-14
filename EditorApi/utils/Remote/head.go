@@ -7,6 +7,10 @@ import (
 
 )
 
+/*
+	Fait des requetes HEAD sur un url specifique avec les configurations definies dans RequestConfig
+*/
+
 func (remote *remote) HEAD(config RequestConfig) (*http.Response, error) {
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
