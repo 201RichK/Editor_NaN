@@ -64,8 +64,6 @@ export default class Timeline extends Component {
                 <div className="time2">09s runtime</div>
             </div>
 
-
-
             <svg height="5" width="200">
                             <line x1="0" y1="0" x2="200" y2="0" stroke="#004165" strokewith="5" />
                             Sorry, your browser does not support inline SVG.
@@ -92,9 +90,7 @@ export default class Timeline extends Component {
                             <circle cx="10" cy="11" r="5" fill="#004165" />
                             </svg>
                             <div className="time">4s runtime</div>
-
                         </div>
-
                         <svg height="5" width="300">
                             <line x1="0" y1="0" x2="300" y2="0" stroke="#004165" strokewith="5" />
                             Sorry, your browser does not support inline SVG.
