@@ -11,7 +11,7 @@ func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	orm.RegisterDataBase("default", "postgres", "postgres://postgres:password@localhost/nanChallengeDb?sslmode=disable")
 
-	orm.RegisterModel(new(User), new(Demande), new(Challenge), new(Exercice), new(Enonce), new(UserChallenge))
+	orm.RegisterModel(new(User), new(Demande), new(Challenge), new(Exercice), new(Enonce), new(UserChallenge), new(Language), new(Testeur))
 
 	err := orm.RunSyncdb("default", false, true)
 	utils.CheckError(err)
