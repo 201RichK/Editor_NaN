@@ -1,28 +1,51 @@
 import React, {Component} from 'react'
 import './login.css'
+import * as yup from 'yup'
+import Axios from 'axios'
 
 export default class Login extends Component {
-    constructor (props) {
-        super(props)
-
+    constructor () {
+        super()
         this.state = {
-            username: '',
+            email: '',
             password: '',
+            emailError: '',
+            passwordError: '',
         }
-
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleChange = this.handleChange.bind(this)
     }
 
-    handleChange(event){
+
+    onChangeEmail = (event) => {
         this.setState({
-            username: event.target.username,
-            password: event.target.password})
+            email: event.target.value
+        })
+    }
+    onChangePassword = (event) => {
+        this.setState({
+            password: event.target.value
+        })
     }
 
-    handleSubmit(event) {
-        console.log(this.state.value)
-       //event.preventDefault();
+    onSubmit = (event) => {
+        event.preventDefault()
+        let schema = yup.object().shape({
+            password: yup.string().required().min(8, "password must be superior 8 character"),
+            email: yup.string().email().required(),
+          });
+          
+          schema.validate({
+            email: this.state.email,
+            password: this.state.password
+          }).then((data) => {
+              console.log(data)
+            Axios.post("http://localhost:8080/login", data)
+          }).catch((err) => {
+          })
+        
+    }
+
+    onChange(event) {
+
     }
 
     render = () => {
@@ -30,10 +53,12 @@ export default class Login extends Component {
             <div className="vertical-align">
                 <div className="container">
                     <div className="avatar"></div>
-                    <form onSubmit={this.handleSubmit()}>
+                    <form onSubmit={this.onSubmit}>
 
-                        <input type="text" placeholder="Username" name="username" onChange={this.handleChange()}/>   
-                        <input type="password" placeholder="Password" name="password" onChange={this.handleChange()}/>
+                        <input type="text" placeholder="Username" name="username" onChange={this.onChangeEmail} />
+                        { this.state.emailError !== ''  && this.state.emailError}   
+                        <input type="password" placeholder="Password" name="password" onChange={this.onChangePassword} />
+                        { this.state.emailError !== ''  && this.state.passwordError} 
                         <input type="submit" value="Login" />
 
                     </form>
