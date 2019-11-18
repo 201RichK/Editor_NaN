@@ -28,6 +28,10 @@ export default class Login extends Component {
 
     onSubmit = (event) => {
         event.preventDefault()
+        this.setState({
+            emailError: '',
+            passwordError: ''
+        })
         let schema = yup.object().shape({
             password: yup.string().required().min(8, "password must be superior 8 character"),
             email: yup.string().email().required(),
@@ -40,6 +44,17 @@ export default class Login extends Component {
               console.log(data)
             Axios.post("http://localhost:8080/login", data)
           }).catch((err) => {
+              switch (err.path) {
+                  case "email":
+                      this.setState({
+                          emailError: err.errors[0]
+                      })
+                      break
+                case "password":
+                    this.setState({
+                        passwordError: err.errors[0]
+                    })
+              }
           })
         
     }
@@ -58,7 +73,7 @@ export default class Login extends Component {
                         <input type="text" placeholder="Username" name="username" onChange={this.onChangeEmail} />
                         { this.state.emailError !== ''  && this.state.emailError}   
                         <input type="password" placeholder="Password" name="password" onChange={this.onChangePassword} />
-                        { this.state.emailError !== ''  && this.state.passwordError} 
+                        { this.state.passwordError !== ''  && this.state.passwordError} 
                         <input type="submit" value="Login" />
 
                     </form>

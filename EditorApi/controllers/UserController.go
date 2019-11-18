@@ -5,6 +5,8 @@ import (
 	"Editor_NaN/EditorApi/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	utils "Editor_NaN/EditorApi/utils/option"
+	"net/http"
 )
 
 type UserController struct {
@@ -13,6 +15,17 @@ type UserController struct {
 
 
 func (this *UserController) Login() {
+
+	utils.SetHeader(&this.Controller)
+
+	//Annuler la requete si on a une methode OPTION
+	if this.Ctx.Request.Method == http.MethodOptions {
+		this.Abort("204")
+		this.ServeJSON()
+		return
+	}
+
+
 	user := models.User{
 		Email: this.GetString("email"),
 		Password: this.GetString("password"),
