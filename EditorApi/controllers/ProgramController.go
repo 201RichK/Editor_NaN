@@ -42,10 +42,10 @@ func (this *ProgramController) RunProgram() {
 	//Recuperer le code de l'utilisateur
 	json.NewDecoder(this.Ctx.Request.Body).Decode(&exerciceModel.Program)
 
-	programHeader := "package main \nimport \"fmt\"  \n" + exerciceModel.Program["source_code"].(string) + "\nfunc main() { \n\n " + "fmt.Println(somme(5, 4))" + "\n\n }"
+	programHeader := exerciceModel.Program["source_code"].(string) + "\nfunc main() { \n\n " + "fmt.Println(somme(5, 4))" + "\n\n }"
 	exerciceModel.Program["source_code"] = programHeader
 	exerciceModel.Program["language_id"] = 22
-	fmt.Println(exerciceModel.Program)
+	fmt.Println(exerciceModel.Program["source_code"])
 
 	//poster l'exercice ver l'API
 	rmt := remote.NewRemote(remote.RemoteConfig{})
