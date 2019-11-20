@@ -223,6 +223,26 @@
     }
 
     class App extends React.Component {
+
+        constructor() {
+            super()
+            this.state = {
+                ws: new WebSocket("ws://localhost:8080/ws")
+            }
+        }
+
+        componentDidMount = () => {
+            this.state.ws.onopen = () => {
+                console.log("you are connected")
+                this.state.ws.send({ data: "hello world"})
+            }
+            
+            this.state.ws.onclose = () => {
+                console.log("Connection closed")
+            }
+        }
+
+
         render = () => {
             return (
                 <div className="App flex column one">
