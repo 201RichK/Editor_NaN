@@ -3,7 +3,6 @@ package utilswebsocket
 import (
 	"github.com/astaxie/beego/session"
 //	"github.com/gorilla/websocket"
-"fmt"
 )
 
 type Hub struct {
@@ -21,6 +20,7 @@ func newHub(name string) *Hub {
 		name: name,
 		clients: make(map[uint]*Client),
 		Compo: make(map[string]*Hub),
+		receiver: make(chan *Message),
 	}
 }
 
@@ -41,7 +41,6 @@ func (hub *Hub) addClient(client *Client) {
 			hub.clients[client.user.Id] = client
 		}
 	}
-	fmt.Println(hub)
 	go hub.handleEachClient()
 }
 
@@ -99,6 +98,7 @@ func (hub * Hub) handleEachClient() {
 			m.kind = ADDTOHUB
 			client.conn.ReadJSON(&m.body)
 			m.sender = client
+
 			hub.receiver <- m
 		}
 	}
