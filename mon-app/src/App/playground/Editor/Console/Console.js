@@ -15,8 +15,6 @@ class Console extends Component {
                     <li><strong>Erreur:</strong> {this.props.console.stderr}</li>
                     <li><strong>Result:</strong> {this.props.console.stdout}</li>
                 </ul>
-                
-
             </div>
         )
     }

@@ -2,9 +2,6 @@ import React, {Component} from 'react'
 import './exercice.css'
 
 export default class Exercice extends Component {
-    
-
-
 
     render = () => {
         return (

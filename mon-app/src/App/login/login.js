@@ -14,7 +14,6 @@ export default class Login extends Component {
         }
     }
 
-
     onChangeEmail = (event) => {
         this.setState({
             email: event.target.value
@@ -33,7 +32,7 @@ export default class Login extends Component {
             passwordError: ''
         })
         let schema = yup.object().shape({
-            password: yup.string().required().min(8, "password must be superior 8 character"),
+            password: yup.string().required().min(5, "password must be superior 8 character"),
             email: yup.string().email().required(),
           });
           
@@ -41,8 +40,9 @@ export default class Login extends Component {
             email: this.state.email,
             password: this.state.password
           }).then((data) => {
-              console.log(data)
-            Axios.post("http://localhost:8080/login", data)
+            Axios.post("http://localhost:8080/login", data).then((response) => {
+                console.log(response)
+            })
           }).catch((err) => {
               switch (err.path) {
                   case "email":
@@ -55,8 +55,7 @@ export default class Login extends Component {
                         passwordError: err.errors[0]
                     })
               }
-          })
-        
+          }) 
     }
 
     onChange(event) {
