@@ -21,7 +21,6 @@ func (c *HomeController) Home() {
 
 		valid := validation.Validation{}
 		isOk, _:= valid.Valid(&user)
-
 		if isOk {
 			u, _ := models.SelectUser(user.Email)
 			if u != nil {
