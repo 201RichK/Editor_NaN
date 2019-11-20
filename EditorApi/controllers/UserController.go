@@ -1,18 +1,18 @@
 package controllers
 
-
 import (
 	"Editor_NaN/EditorApi/models"
+	utils "Editor_NaN/EditorApi/utils/option"
+	"fmt"
+	"net/http"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	utils "Editor_NaN/EditorApi/utils/option"
-	"net/http"
 )
 
 type UserController struct {
 	beego.Controller
 }
-
 
 func (this *UserController) Login() {
 
@@ -25,9 +25,10 @@ func (this *UserController) Login() {
 		return
 	}
 
+	fmt.Println(this.GetString("email"))
 
 	user := models.User{
-		Email: this.GetString("email"),
+		Email:    this.GetString("email"),
 		Password: this.GetString("password"),
 	}
 
@@ -37,8 +38,9 @@ func (this *UserController) Login() {
 	if u != nil {
 		this.StartSession()
 		this.SetSession("connected", u)
+		this.Data["json"] = u
 	} else {
-		this.Data["json"] = struct { Error string} { Error: "Email and Password don't correspond"}
+		this.Data["json"] = struct{ Error string }{Error: "Email and Password don't correspond"}
 	}
 	this.ServeJSON()
 }
