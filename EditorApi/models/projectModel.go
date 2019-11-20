@@ -4,8 +4,8 @@ import "time"
 
 type User struct {
 	Id             uint
-	Email          string
-	Password       string
+	Email          string	`valid:"Email"`
+	Password       string	`valid:"Required"`
 	Name           string
 	Demandes       []*Demande       `orm:"reverse(many)"`
 	UserChallenges []*UserChallenge `orm:"reverse(many)"`
