@@ -11,6 +11,7 @@
                 lang: "golang",
                 theme: "monokai",
                 program: "package main\n\n\n\nfunc somme(a, b int) { \n\n}",
+                console: Object,
             }
         }
 
@@ -39,9 +40,9 @@
                     <button onClick={this.run} >Run</button>
                     <div id="Console">
                         <ul>
-                            <li><strong>Temps:</strong> </li>
-                            <li><strong>Erreur:</strong> </li>
-                            <li><strong>Result:</strong> </li>
+                            <li><strong>Temps:</strong> {this.state.console.time} </li>
+                            <li><strong>Erreur:</strong>{ this.state.console.stderr} </li>
+                            <li><strong>Result:</strong>{ this.state.console.stdout} </li>
                         </ul>
                     </div>
                 </div>
