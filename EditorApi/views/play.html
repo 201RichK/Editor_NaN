@@ -10,24 +10,33 @@
                 editor: Object,
                 lang: "golang",
                 theme: "monokai",
-                program: "package main\n\n\n\nfunc main() { \n\n}",
+                program: "package main\n\n\n\nfunc somme(a, b int) { \n\n}",
             }
         }
 
         componentDidMount(){
             window.ace.require("ace/ext/language_tools");
-            var aceEditor = window.ace.edit("editor");
-            aceEditor.setTheme(`ace/theme/${this.state.theme}`);
-            aceEditor.setValue(this.state.program);
-            aceEditor.getSession().setMode(`ace/mode/${this.state.lang}`);
+            this.editor = window.ace.edit("editor");
+            this.editor.setTheme(`ace/theme/${this.state.theme}`);
+            this.editor.setValue(this.state.program);
+            this.editor.getSession().setMode(`ace/mode/${this.state.lang}`);
             document.getElementById('editor').style.fontSize='16px';
+        }
+
+        run = () => {
+            axios.post("http://localhost:8080/run", { source_code: this.editor.getValue()})
+                .then((response) => {
+                    this.setState({
+                        console: response.data
+                    })
+                })
         }
 
         render() {
             return (
                 <div className="three">
                     <div id="editor" > </div>
-                    <button>Run</button>
+                    <button onClick={this.run} >Run</button>
                     <div id="Console">
                         <ul>
                             <li><strong>Temps:</strong> </li>
