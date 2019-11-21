@@ -238,7 +238,7 @@
             let ws = new WebSocket("ws://localhost:8080/ws")
             ws.onopen = () => {
                 console.log("you are connected")
-                ws.send({body: "hello world"})
+                ws.send(JSON.stringify({data: "hello world"}))
             }
 
             ws.onclose = (err) => {

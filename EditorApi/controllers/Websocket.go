@@ -12,6 +12,7 @@ import (
 var mainHub *utilswebsocket.Hub
 func init() {
 	mainHub = utilswebsocket.NewHub("mainHUB")
+	mainHub.NewCompo()
 	go utilswebsocket.MainHandle(mainHub)
 }
 

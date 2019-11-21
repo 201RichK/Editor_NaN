@@ -25,6 +25,9 @@ func MainHandle(hub *Hub) {
 						each.receiver <- m
 					}
 				case ADDTOHUB:
+					compoHUB := hub.Compo["Compo1"]
+					compoHUB.addClient(m.sender)
+					fmt.Println(compoHUB)
 				}
 			}
 		}

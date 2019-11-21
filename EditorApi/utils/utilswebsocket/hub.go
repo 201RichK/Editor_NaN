@@ -26,21 +26,21 @@ func NewHub(name string) *Hub {
 }
 
 
-func (hub *Hub) newCompo() {
+func (hub *Hub) NewCompo() {
 	hub.Compo["Compo1"] = NewHub("Compo1")
 }
 
 
 
 // Ajouter un client au Hub specifique
-func (hub *Hub) addClient(client *Client) {
+func (hub *Hub) addClient(client *Client) uint {
 		if _, ok := hub.clients[client.user.Id]; !ok {
 			hub.clients[client.user.Id] = client
 		}else {
 			hub.deleteClient(client.user.Id)
 			hub.clients[client.user.Id] = client
 		}
-		fmt.Println(hub)
+		return client.user.Id
 }
 
 
@@ -86,7 +86,8 @@ func (hub *Hub) checkConnection() {
 
 
 
-func (hub * Hub) listensClient(client *Client) {
+func (hub * Hub) listensClient(id uint) {
+	if client, ok := hub.clients[id]; ok {
 		go func () {
 				for {
 					m := <-client.receiver
@@ -94,17 +95,18 @@ func (hub * Hub) listensClient(client *Client) {
 				}
 
 		}()
-		//for {
-		//	m := new(Message)
-		// 	m.kind = ADDTOHUB
-		// 	err := client.conn.ReadJSON(&m.body)
-		// 	if err != nil {
-		// 		panic(err)
-		// 	} else {
-		// 		m.sender = client
-		// 		hub.receiver <- m
-		// 	}
-		// }
+		for {
+			m := new(Message)
+			m.kind = ADDTOHUB
+			err := client.conn.ReadJSON(&m.body)
+			if err != nil {
+				panic(err)
+			} else {
+				m.sender = client
+				hub.receiver <- m
+			}
+		}
+	}
 }
 
 
@@ -114,7 +116,6 @@ func (hub * Hub) listensClient(client *Client) {
 
 func (hub *Hub) HandleClient(client *Client) {
 	fmt.Println("my hub", hub)
-
-	hub.addClient(client)
-	go hub.listensClient(client)
+	id := hub.addClient(client)
+	go hub.listensClient(id)
 }
