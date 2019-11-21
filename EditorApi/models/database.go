@@ -9,9 +9,9 @@ import (
 
 func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "postgres://postgres:admin@localhost/nanchallengedb?sslmode=disable")
+	orm.RegisterDataBase("default", "postgres", "postgres://postgres:password@localhost/nanChallengeDb?sslmode=disable")
 
-	orm.RegisterModel(new(User), new(Demande), new(Challenge), new(Exercice), new(Enonce), new(UserChallenge), new(Language), new(Testeur))
+	orm.RegisterModel(new(User), new(Language), new(Demande), new(Challenge), new(Vainqueur), new(ExoChallengeRand), new(Exercice), new(Testeur), new(UserChallenge))
 
 	err := orm.RunSyncdb("default", false, true)
 	utils.CheckError(err)

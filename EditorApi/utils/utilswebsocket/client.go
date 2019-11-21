@@ -12,9 +12,9 @@ type Client struct {
 }
 
 func NewClient(c *websocket.Conn, user models.User) *Client {
-	client := Client {
+	client := &Client {
 		user: user,
 		conn: c,
 	}
-	return &client
+	return client
 }

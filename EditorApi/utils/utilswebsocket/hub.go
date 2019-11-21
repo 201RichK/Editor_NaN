@@ -3,6 +3,7 @@ package utilswebsocket
 import (
 	"github.com/astaxie/beego/session"
 //	"github.com/gorilla/websocket"
+"fmt"
 )
 
 type Hub struct {
@@ -15,7 +16,7 @@ type Hub struct {
 
 
 // Creer un nouveau Hub
-func newHub(name string) *Hub {
+func NewHub(name string) *Hub {
 	return &Hub {
 		name: name,
 		clients: make(map[uint]*Client),
@@ -26,22 +27,20 @@ func newHub(name string) *Hub {
 
 
 func (hub *Hub) newCompo() {
-	hub.Compo["Compo1"] = newHub("Compo1")
+	hub.Compo["Compo1"] = NewHub("Compo1")
 }
 
 
 
 // Ajouter un client au Hub specifique
 func (hub *Hub) addClient(client *Client) {
-	if client != nil {
 		if _, ok := hub.clients[client.user.Id]; !ok {
 			hub.clients[client.user.Id] = client
-		} else {
+		}else {
 			hub.deleteClient(client.user.Id)
 			hub.clients[client.user.Id] = client
 		}
-	}
-	go hub.handleEachClient()
+		fmt.Println(hub)
 }
 
 
@@ -61,6 +60,7 @@ func (hub *Hub) deleteClient(id uint) {
 	if client, ok := hub.clients[id]; ok {
 		delete(hub.clients, id)
 		client.conn.Close()
+		fmt.Println("connction close")
 	}
 }
 
@@ -75,8 +75,10 @@ func (hub *Hub) removeClient(id uint) {
 // verifier si les clients sont toujours connectés
 func (hub *Hub) checkConnection() {
 	for _, client := range hub.clients {
-		if err := client.conn.ReadJSON(nil); err != nil {
-			hub.deleteClient(client.user.Id)
+		if msg, _, err := client.conn.ReadMessage(); err != nil {
+			if msg != -1 {
+				hub.deleteClient(client.user.Id)
+			}
 		}
 	}
 }
@@ -84,8 +86,7 @@ func (hub *Hub) checkConnection() {
 
 
 
-func (hub * Hub) handleEachClient() {
-	for _, client := range hub.clients {
+func (hub * Hub) listensClient(client *Client) {
 		go func () {
 				for {
 					m := <-client.receiver
@@ -93,19 +94,27 @@ func (hub * Hub) handleEachClient() {
 				}
 
 		}()
-		for {
-			m := new(Message)
-			m.kind = ADDTOHUB
-			client.conn.ReadJSON(&m.body)
-			m.sender = client
-
-			hub.receiver <- m
-		}
-	}
+		//for {
+		//	m := new(Message)
+		// 	m.kind = ADDTOHUB
+		// 	err := client.conn.ReadJSON(&m.body)
+		// 	if err != nil {
+		// 		panic(err)
+		// 	} else {
+		// 		m.sender = client
+		// 		hub.receiver <- m
+		// 	}
+		// }
 }
 
 
 
-func run(handle func()) {
-	handle()
+
+
+
+func (hub *Hub) HandleClient(client *Client) {
+	fmt.Println("my hub", hub)
+
+	hub.addClient(client)
+	go hub.listensClient(client)
 }
