@@ -36,10 +36,11 @@ func (hub *Hub) NewCompo() {
 func (hub *Hub) addClient(client *Client) uint {
 		if _, ok := hub.clients[client.user.Id]; !ok {
 			hub.clients[client.user.Id] = client
-		}else {
-			hub.deleteClient(client.user.Id)
-			hub.clients[client.user.Id] = client
 		}
+		// else {
+		// 	hub.deleteClient(client.user.Id)
+		// 	hub.clients[client.user.Id] = client
+		// }
 		return client.user.Id
 }
 
@@ -57,17 +58,19 @@ func (hub *Hub) getClient(id uint) *Client {
 
 // Supprimer et deconnecter un client
 func (hub *Hub) deleteClient(id uint) {
-	if client, ok := hub.clients[id]; ok {
-		delete(hub.clients, id)
-		client.conn.Close()
-		fmt.Println("connction close")
-	}
+	client := hub.removeClient(id)
+	client.conn.Close()
+	fmt.Println("connection close")
 }
 
 
 // Supprimer un client de la liste du hub specifique
-func (hub *Hub) removeClient(id uint) {
-	delete(hub.clients, id)
+func (hub *Hub) removeClient(id uint) *Client {
+	if client, ok := hub.clients[id]; ok {
+		delete(hub.clients, id)
+		return client
+	}
+	return nil
 }
 
 
@@ -86,27 +89,33 @@ func (hub *Hub) checkConnection() {
 
 
 
-func (hub * Hub) listensClient(id uint) {
-	if client, ok := hub.clients[id]; ok {
-		go func () {
-				for {
-					m := <-client.receiver
-					client.conn.WriteJSON(m.body)
+func (hub *Hub) listensClient(id uint) {
+				fmt.Println("run client")
+				if client, ok := hub.clients[id]; ok {
+					go func () {
+							for {
+								m := <- client.receiver
+								fmt.Println("send message to client" ,m)
+								err := client.conn.WriteJSON(*m)
+								if err != nil {
+									panic(err)
+								}
+							}
+					}()
+					for {
+						m := new(Message)
+						err := client.conn.ReadJSON(m)
+						m.hub = hub.Compo["Compo1"]
+						fmt.Println("message: ", m, "To Hub", hub.name)
+						if err != nil {
+							panic(err)
+						} else {
+							m.sender = client
+							hub.receiver <- m
+						}
+					}
 				}
 
-		}()
-		for {
-			m := new(Message)
-			m.kind = ADDTOHUB
-			err := client.conn.ReadJSON(&m.body)
-			if err != nil {
-				panic(err)
-			} else {
-				m.sender = client
-				hub.receiver <- m
-			}
-		}
-	}
 }
 
 
@@ -115,7 +124,7 @@ func (hub * Hub) listensClient(id uint) {
 
 
 func (hub *Hub) HandleClient(client *Client) {
-	fmt.Println("my hub", hub)
+	fmt.Println(hub)
 	id := hub.addClient(client)
 	go hub.listensClient(id)
 }

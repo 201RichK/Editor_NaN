@@ -71,6 +71,7 @@ func (this *ProgramController) RunProgram() {
 	m["time"] = exerciceModel.Result["time"]
 	m["stdout"] = exerciceModel.Result["stdout"]
 	m["stderr"] = exerciceModel.Result["stderr"]
+	m["success"] = false
 	this.Data["json"] = m
 	this.ServeJSON()
 }

@@ -2,10 +2,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ext-language_tools.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/babel">
-
+    let ws = new WebSocket("ws://localhost:8080/ws")
     class Editor extends  React.Component {
-        constructor() {
-            super()
+        constructor(props) {
+            super(props)
             this.state = {
                 editor: Object,
                 lang: "golang",
@@ -30,7 +30,13 @@
                     this.setState({
                         console: response.data
                     })
+                    if (response.data.success === false) {
+                        ws.send(JSON.stringify({
+                            kind: "run",
+                        }))
+                    }
                 })
+
         }
 
         render() {
@@ -69,6 +75,14 @@
     }
 
     class Timeline extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                run: props.run,
+            }
+        }
+
+
         render = () => {
             return (
                 <div className="timelineDiv flex justifyCenter">
@@ -83,12 +97,12 @@
 
                                 <div className="event1Bubble">
                                     <div className="eventTime">
-                                        <div className="DayDigit">02</div>
+                                        <div className="DayDigit">{this.state.run}</div>
                                         <div className="Day">
                                             Run
                                             <div className="MonthYear">Exo 1</div>
                                         </div>
-                                        <div className="DayDigit">02</div>
+                                        <div className="DayDigit">00</div>
                                         <div className="Day">
                                             Run
                                             <div className="MonthYear">Exo 1</div>
@@ -234,11 +248,24 @@
 
     class App extends React.Component {
 
+        constructor() {
+            super()
+            this.state = {
+                run: 0,
+            }
+        }
+
         componentDidMount = () => {
-            let ws = new WebSocket("ws://localhost:8080/ws")
             ws.onopen = () => {
                 console.log("you are connected")
-                ws.send(JSON.stringify({data: "hello world"}))
+                ws.send(JSON.stringify({kind: "addtohub"}))
+            }
+
+            ws.onmessage = (res) => {
+                console.log(res.data)
+                this.setState({
+                    run: 1,
+                })
             }
 
             ws.onclose = (err) => {
@@ -259,7 +286,7 @@
                         <Editor></Editor>
                     </div>
                     <div className="one">
-                        <Timeline></Timeline>
+                        <Timeline run={this.state.run}></Timeline>
                     </div>
                 </div>
             )

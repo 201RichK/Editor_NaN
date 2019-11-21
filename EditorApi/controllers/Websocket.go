@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"Editor_NaN/EditorApi/utils/utilswebsocket"
 	"Editor_NaN/EditorApi/models"
-	"fmt"
 )
 
 var mainHub *utilswebsocket.Hub
@@ -33,6 +32,5 @@ func (this *WebScoketController) Handle() {
 	this.StartSession()
 	user := this.GetSession("user").(models.User)
 	client := utilswebsocket.NewClient(ws, user)
-	fmt.Println("client:", client)
 	mainHub.HandleClient(client)
 }

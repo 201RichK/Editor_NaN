@@ -12,8 +12,9 @@ func init() {
 
 
 type Message struct {
-	kind kind
+	Kind kind `json:"kind"`
+	hub *Hub
 	sender   *Client
 	receivers []*Client
-	body interface{}
+	Body interface{} `json:"body"`
 }

@@ -43,4 +43,5 @@ func (this *UserController) Login() {
 		this.Data["json"] = struct{ Error string }{Error: "Email and Password don't correspond"}
 	}
 	this.ServeJSON()
-}
+} 
+ 

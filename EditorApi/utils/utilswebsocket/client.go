@@ -15,6 +15,7 @@ func NewClient(c *websocket.Conn, user models.User) *Client {
 	client := &Client {
 		user: user,
 		conn: c,
+		receiver: make(chan *Message),
 	}
 	return client
 }
