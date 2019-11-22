@@ -22,11 +22,14 @@ type Language struct {
 }
 
 type Demande struct {
-	Id        uint
-	Cible     uint
-	Reponse   bool
-	User      *User      `orm:"rel(fk)"`
-	Challenge *Challenge `orm:"reverse(one)"`
+	Id          uint
+	IdUser1     uint
+	IdUser2     uint
+	Reponse     bool
+	DateDemande time.Time `orm:"auto_now_add;type(datetime)"`
+	DateCompo   time.Duration
+	User        *User      `orm:"rel(fk)"`
+	Challenge   *Challenge `orm:"reverse(one)"`
 }
 
 type Challenge struct {

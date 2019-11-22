@@ -26,7 +26,7 @@ func (c *HomeController) Home() {
 			if u != nil {
 				c.StartSession()
 				c.SetSession("user", u)
-				c.Ctx.Redirect(http.StatusSeeOther, "/play")
+				c.Ctx.Redirect(http.StatusSeeOther, "/online")
 				return
 			}
 		}
@@ -51,5 +51,20 @@ func (c *HomeController) Play() {
 	c.LayoutSections = map[string]string{}
 	c.LayoutSections["HtmlHead"] = "fragment/play.html"
 	c.TplName = "play.html"
+	c.Render()
+}
+
+func (c *HomeController) Online() {
+
+	c.StartSession()
+	if c.GetSession("user") == nil {
+		c.Ctx.Redirect(http.StatusSeeOther, "/")
+		return
+	}
+
+	c.Layout = "layout/index.html"
+	c.LayoutSections = map[string]string{}
+	c.LayoutSections["HtmlHead"] = "fragment/onlineCss.html"
+	c.TplName = "online.html"
 	c.Render()
 }

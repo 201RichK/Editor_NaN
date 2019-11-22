@@ -262,10 +262,14 @@
             }
 
             ws.onmessage = (res) => {
-                console.log(res.data)
-                this.setState({
-                    run: 1,
-                })
+                const data = JSON.parse(res.data)
+                switch (data.kind) {
+                    case "run":
+                    console.log(data)
+                        break;
+                    default:
+                        break;
+                }
             }
 
             ws.onclose = (err) => {

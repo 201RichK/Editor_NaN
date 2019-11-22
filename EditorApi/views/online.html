@@ -1,0 +1,79 @@
+<script type="text/babel">
+let ws = new WebSocket("ws://localhost:8080/ws")
+class App extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            newClients: []
+        }
+    }
+    componentDidMount = () => { 
+        ws.onopen = () => {
+            console.log("you are connected")
+            
+        }
+        ws.onmessage = (res) => {
+            const data = JSON.parse(res.data)
+            switch (data.kind) {
+                case "newClient":
+                this.setState((state, props) => ({
+                        newClients: data.Users,
+                    }))
+                    break;
+                case "invitation":
+                console.log(data)
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+
+        ws.onerror = (err) => {
+            console.log(err)
+        }
+    }
+
+    onChallenge = (event) => {
+        ws.send(JSON.stringify({
+            kind: "invitation",
+            rcvs: [Number.parseInt(event.target.getAttribute("userid"))],
+        }))
+    }
+
+
+    render = () => {
+        return (
+                <div className="container clearfix">
+                <div className="people-list" id="people-list">
+                    <div className="search">
+                    <input type="text" placeholder="search" />
+                    
+                    </div>
+                    <ul className="list">
+                        {this.state.newClients.map((user, id) => {
+                         return <li key={id} className="clearfix">
+                                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+                                <div className="about">
+                                <div className="name">{user.Username}</div>
+                                <div className="status">
+                                    online
+                                </div>
+                                <button id="challenge" onClick={this.onChallenge} userid={user.Id}>challenge</button>
+                                </div>
+                            </li>
+                        }
+                        )}
+                    </ul>
+                </div>
+                </div>
+        )
+    }
+}
+ReactDOM.render(<App />, document.getElementById('root'))
+</script>
+
+
+
+

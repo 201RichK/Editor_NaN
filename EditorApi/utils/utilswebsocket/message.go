@@ -1,5 +1,9 @@
 package utilswebsocket
 
+import (
+	"Editor_NaN/EditorApi/models"
+)
+
 type kind string
 const (
 	RUN kind = "run"
@@ -12,9 +16,9 @@ func init() {
 
 
 type Message struct {
+	sender   uint
 	Kind kind `json:"kind"`
-	hub *Hub
-	sender   *Client
-	receivers []*Client
+	Receivers []uint `json:"rcvs"`
+	Users []models.User
 	Body interface{} `json:"body"`
 }

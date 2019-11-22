@@ -8,11 +8,10 @@ import (
 	"Editor_NaN/EditorApi/models"
 )
 
-var mainHub *utilswebsocket.Hub
+var mainStore *utilswebsocket.Store
 func init() {
-	mainHub = utilswebsocket.NewHub("mainHUB")
-	mainHub.NewCompo()
-	go utilswebsocket.MainHandle(mainHub)
+	mainStore = utilswebsocket.NewStore("main")
+	mainStore.Stores = make((map[string]*utilswebsocket.Store))
 }
 
 type WebScoketController struct{
@@ -32,5 +31,5 @@ func (this *WebScoketController) Handle() {
 	this.StartSession()
 	user := this.GetSession("user").(models.User)
 	client := utilswebsocket.NewClient(ws, user)
-	mainHub.HandleClient(client)
+	client.Handle(mainStore)
 }
